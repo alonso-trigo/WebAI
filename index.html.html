@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAI — Simulador de Negocios con IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #fff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #fff;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .nav-desktop {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-desktop a {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-desktop a:hover {
+            color: #667eea;
+        }
+
+        .nav-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            padding-top: 60px;
+            z-index: 1000;
+            border-left: 1px solid #f0f0f0;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu.active {
+            display: block;
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 16px 24px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 24px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin: 40px 0;
+            padding: 40px 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+
+        .about-section {
+            padding: 80px 24px;
+            background: white;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .about-card {
+            text-align: center;
+        }
+
+        .about-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        .about-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .features {
+            padding: 80px 24px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .features h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .features-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 48px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .simulator-section {
+            padding: 80px 24px;
+            background: white;
+        }
+
+        .simulator-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .simulator-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .simulator-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .wizard-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .progress-info {
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .wizard-step h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+        }
+
+        .wizard-step p {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .wizard-step input,
+        .wizard-step textarea,
+        .wizard-step select {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .custom-select-trigger {
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+        }
+
+        .custom-select-trigger:hover {
+            border-color: #667eea;
+        }
+
+        .custom-select-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 100;
+            margin-top: -1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .custom-select-options.active {
+            display: block;
+        }
+
+        .custom-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .custom-option:hover {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        .custom-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .wizard-step input:focus,
+        .wizard-step textarea:focus,
+        .wizard-step select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-btn {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        #prevBtn {
+            background: white;
+            color: #666;
+            border: 1px solid #e0e0e0;
+            flex: 1;
+        }
+
+        #prevBtn:hover {
+            background: #f8f9ff;
+            border-color: #667eea;
+        }
+
+        #nextBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        #nextBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .simulator-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 12px;
+        }
+
+        .tip {
+            border-left: 3px solid #667eea;
+            padding-left: 16px;
+        }
+
+        .tip h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+
+        .tip p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .loader.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        #resultSection {
+            display: none;
+        }
+
+        #resultSection.active {
+            display: block;
+        }
+
+        .result-content {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .result-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #resultText {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 32px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .result-actions button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .result-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .faq-section {
+            padding: 80px 24px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .faq-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            padding: 48px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .faq-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 24px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .faq-item.open p {
+            max-height: 500px;
+        }
+
+        .contact-section {
+            padding: 80px 24px;
+            background: white;
+            text-align: center;
+        }
+
+        .contact-content {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 12px;
+            padding: 60px 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .contact-content p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-links a {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .contact-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        footer {
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            padding: 32px 24px;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            background: #333;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-desktop {
+                display: none;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .buttons-row {
+                flex-direction: column;
+            }
+
+            #prevBtn, #nextBtn {
+                width: 100%;
+            }
+
+            .contact-links {
+                flex-direction: column;
+            }
+
+            .contact-links a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚡ WebAI</h1>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+        <nav class="nav-desktop">
+            <a href="#presentacion">Presentación</a>
+            <a href="#simulador">Simulador</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+        <nav class="nav-menu" id="navMenu">
+            <button class="close-menu" onclick="toggleMenu()">✕</button>
+            <a href="#presentacion">Presentación</a>
+            <a href="#simulador">Simulador</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">✨ Simulador con Inteligencia Artificial</div>
+            <h2>Transforma tu negocio con WebAI</h2>
+            <p>Soy especialista en diseño web, marketing digital e inteligencia artificial. Ayudo a emprendedores y negocios a verse profesionales y vender más — y con este simulador puedes ver el resultado <strong>antes de contratar</strong>.</p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-num">25+</div>
+                    <div class="stat-text">Tipos de negocio</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">2 min</div>
+                    <div class="stat-text">Para tu simulación</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">100%</div>
+                    <div class="stat-text">Gratis</div>
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('simulador').scrollIntoView({behavior:'smooth'})">🚀 Empezar simulación</button>
+                <a href="#contacto" class="btn btn-secondary">💬 Contactar</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="presentacion">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3 style="font-size: 28px; margin-bottom: 8px;">WebAI</h3>
+                    <p>Diseño · Marketing · IA</p>
+                </div>
+                <div class="about-card">
+                    <p style="font-size: 16px; line-height: 1.8;">Creo experiencias digitales que convierten visitantes en clientes. Desde menús de restaurante hasta páginas web completas, cada proyecto está pensado para <strong>generar resultados reales</strong>.</p>
+                </div>
+                <div class="about-card">
+                    <p style="font-size: 14px; line-height: 1.8; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left;">
+                        <span>✓ Diseño Web</span>
+                        <span>✓ Inteligencia Artificial</span>
+                        <span>✓ Marketing Digital</span>
+                        <span>✓ Branding</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Tu negocio merece verse profesional</h2>
+            <p class="features-subtitle">No necesitas gastar miles para saber cómo podría verse tu negocio mejorado. Prueba gratis y decide si quieres el proyecto real.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalizado</h3>
+                    <p>Cada simulación se adapta a tu tipo de negocio, clientes y estilo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Rápido</h3>
+                    <p>15 preguntas y en menos de 2 minutos tienes tu propuesta mejorada.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Con IA</h3>
+                    <p>Powered by Claude, la IA más avanzada para contenido profesional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="simulator-section" id="simulador">
+        <div class="container">
+            <div class="simulator-header">
+                <h2>Simulador IA</h2>
+                <p>Prueba cómo se vería tu negocio mejorado</p>
+            </div>
+
+            <div class="wizard-container" id="wizardForm">
+                <div class="progress-info">
+                    <span id="stepCount">1</span> / 15
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div class="wizard-step active" id="step1">
+                    <h3>¿Tipo de negocio?</h3>
+                    <p>Selecciona el rubro que mejor describe tu empresa.</p>
+                    <div class="custom-select" id="customSelect">
+                        <div class="custom-select-trigger" onclick="toggleCustomSelect()">
+                            <span id="selectedValue">— Selecciona —</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="custom-select-options" id="selectOptions">
+                            <div class="custom-option" data-value="">— Selecciona —</div>
+                            <div class="custom-option" data-value="Restaurante">Restaurante</div>
+                            <div class="custom-option" data-value="Cafetería">Cafetería</div>
+                            <div class="custom-option" data-value="Bar/Pub">Bar/Pub</div>
+                            <div class="custom-option" data-value="Panadería">Panadería</div>
+                            <div class="custom-option" data-value="Pastelería">Pastelería</div>
+                            <div class="custom-option" data-value="Abogado">Abogado</div>
+                            <div class="custom-option" data-value="Contador">Contador</div>
+                            <div class="custom-option" data-value="Consultor">Consultor</div>
+                            <div class="custom-option" data-value="Veterinaria">Veterinaria</div>
+                            <div class="custom-option" data-value="Clínica/Centro médico">Clínica/Centro médico</div>
+                            <div class="custom-option" data-value="Dentista">Dentista</div>
+                            <div class="custom-option" data-value="Psicólogo">Psicólogo</div>
+                            <div class="custom-option" data-value="Peluquería">Peluquería</div>
+                            <div class="custom-option" data-value="Salón belleza">Salón belleza</div>
+                            <div class="custom-option" data-value="Gym">Gym</div>
+                            <div class="custom-option" data-value="Academia">Academia</div>
+                            <div class="custom-option" data-value="Tienda de ropa">Tienda de ropa</div>
+                            <div class="custom-option" data-value="Zapatería">Zapatería</div>
+                            <div class="custom-option" data-value="Tienda electrónica">Tienda electrónica</div>
+                            <div class="custom-option" data-value="Perfumería">Perfumería</div>
+                            <div class="custom-option" data-value="Floristería">Floristería</div>
+                            <div class="custom-option" data-value="Librería">Librería</div>
+                            <div class="custom-option" data-value="Farmacia">Farmacia</div>
+                            <div class="custom-option" data-value="Supermercado">Supermercado</div>
+                            <div class="custom-option" data-value="Hotel">Hotel</div>
+                            <div class="custom-option" data-value="Agencia viajes">Agencia viajes</div>
+                            <div class="custom-option" data-value="Fotógrafo">Fotógrafo</div>
+                            <div class="custom-option" data-value="Taller mecánico">Taller mecánico</div>
+                            <div class="custom-option" data-value="Electricista">Electricista</div>
+                            <div class="custom-option" data-value="Plomero">Plomero</div>
+                            <div class="custom-option" data-value="Constructor">Constructor</div>
+                            <div class="custom-option" data-value="Inmobiliaria">Inmobiliaria</div>
+                            <div class="custom-option" data-value="Agencia de seguros">Agencia de seguros</div>
+                            <div class="custom-option" data-value="Cine">Cine</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step2">
+                    <h3>¿Nombre de tu negocio?</h3>
+                    <p>El nombre con el que te conocen tus clientes.</p>
+                    <input type="text" id="nombreNegocio" placeholder="Ej: La Terraza Gourmet, Farmacia Central, Tech Solutions...">
+                </div>
+
+                <div class="wizard-step" id="step3">
+                    <h3>Describe tu negocio brevemente</h3>
+                    <p>¿Qué hace tu negocio? Una o dos frases.</p>
+                    <textarea id="tiempoNegocio" rows="4" placeholder="Ej: Llevo 3 años operando, en el mismo local desde siempre, es relativamente nuevo..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step4">
+                    <h3>¿A quién sirves?</h3>
+                    <p>Describe tu cliente ideal o público objetivo.</p>
+                    <textarea id="clientesTarget" rows="4" placeholder="Ej: Familias jóvenes 25-40 años, ejecutivos profesionales, estudiantes, turistas..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step5">
+                    <h3>¿Qué problema resuelves?</h3>
+                    <p>¿Qué necesidad o dolor de tu cliente solucionas?</p>
+                    <textarea id="propuestaUnica" rows="4" placeholder="Ej: Somos el único lugar que ofrece cocina orgánica certificada + experiencia ambiental inmersiva..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step6">
+                    <h3>Servicios principales</h3>
+                    <p>Lista los servicios o productos que ofreces.</p>
+                    <textarea id="serviciosPrincipales" rows="4" placeholder="Ej: Dineín en terraza, delivery, catering para eventos, asesoría personalizada..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step7">
+                    <h3>🎩 Tono de comunicación</h3>
+                    <p>¿Cómo quieres que suene tu marca?</p>
+                    <div class="options-grid">
+                        <button type="button" class="option-btn" data-field="comunicacion" data-value="Formal y profesional">🎩 Formal</button>
+                        <button type="button" class="option-btn" data-field="comunicacion" data-value="Casual y amigable">😊 Casual</button>
+                        <button type="button" class="option-btn" data-field="comunicacion" data-value="Creativo e inspirador">🎨 Creativo</button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step8">
+                    <h3>💰 Presupuesto disponible</h3>
+                    <p>¿Cuál es tu rango de inversión?</p>
+                    <div class="options-grid">
+                        <button type="button" class="option-btn" data-field="presupuesto" data-value="Bajo (hasta 500k)">Bajo</button>
+                        <button type="button" class="option-btn" data-field="presupuesto" data-value="Medio (500k-1.5M)">Medio</button>
+                        <button type="button" class="option-btn" data-field="presupuesto" data-value="Alto (1.5M+)">Alto</button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step9">
+                    <h3>💻 Presencia online actual</h3>
+                    <p>¿Cuál es tu situación actual?</p>
+                    <div class="options-grid">
+                        <button type="button" class="option-btn" data-field="presenciaOnline" data-value="Sin presencia">Sin presencia</button>
+                        <button type="button" class="option-btn" data-field="presenciaOnline" data-value="Solo redes sociales">Redes</button>
+                        <button type="button" class="option-btn" data-field="presenciaOnline" data-value="Sitio web básico">Web básica</button>
+                        <button type="button" class="option-btn" data-field="presenciaOnline" data-value="Presencia completa">Completa</button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step10">
+                    <h3>🎯 Mejoras principales</h3>
+                    <p>¿Qué quieres mejorar?</p>
+                    <textarea id="mejorasPrincipales" rows="4" placeholder="Ej: Presencia online, identidad visual moderna, mejor comunicación de servicios..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step11">
+                    <h3>🎨 Colores preferidos</h3>
+                    <p>¿Qué colores te representan?</p>
+                    <input type="text" id="coloresPreferidos" placeholder="Ej: Azul marino y dorado, rojo y blanco, verde y tierra...">
+                </div>
+
+                <div class="wizard-step" id="step12">
+                    <h3>✨ Estilo visual</h3>
+                    <p>¿Qué estética prefieres para tu marca? (Ej: moderno, clásico, creativo)</p>
+                    <div class="options-grid">
+                        <button type="button" class="option-btn" data-field="estiloVisual" data-value="Moderno y minimalista">🔷 Moderno</button>
+                        <button type="button" class="option-btn" data-field="estiloVisual" data-value="Clásico y elegante">🏛️ Clásico</button>
+                        <button type="button" class="option-btn" data-field="estiloVisual" data-value="Creativo y vibrante">🌈 Creativo</button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step13">
+                    <h3>📁 Referencia o inspiración (Opcional)</h3>
+                    <p>¿Tienes una referencia? Puedes compartir una URL o subir una foto/screenshot (Puedes saltarlo)</p>
+                    <input type="url" id="urlReferencia" placeholder="Ej: https://ejemplo.com/pagina-que-te-inspira" style="margin-bottom: 12px;">
+                    <p style="font-size: 13px; color: #667eea; margin-bottom: 12px;">O sube una foto/screenshot:</p>
+                    <input type="file" id="archivoReferencia" accept="image/*" placeholder="Sube una imagen...">
+                    <p style="font-size: 12px; color: #999; margin-top: 8px;">Formatos: JPG, PNG | Máximo 5MB (Opcional)</p>
+                </div>
+
+                <div class="wizard-step" id="step14">
+                    <h3>💭 Sobre tu referencia (Opcional)</h3>
+                    <p>¿Qué te gusta de esa referencia? ¿Qué quieres conservar o mejorar? (Puedes saltarlo)</p>
+                    <textarea id="comentariosReferencia" rows="4" placeholder="Ej: Me gusta el diseño limpio, la paleta de colores, la tipografía..."></textarea>
+                </div>
+
+                <div class="wizard-step" id="step15">
+                    <h3>¡Estamos listos!</h3>
+                    <p>Haz click en el botón para generar tu propuesta profesional.</p>
+                </div>
+
+                <div class="buttons-row">
+                    <button id="prevBtn" class="btn" style="display: none;">← Anterior</button>
+                    <button id="nextBtn" class="btn btn-primary">Siguiente →</button>
+                </div>
+            </div>
+
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p>La IA está creando tu propuesta profesional</p>
+            </div>
+
+            <div class="simulator-tips">
+                <div class="tip">
+                    <h4>💡 Consejo</h4>
+                    <p>Mientras más específico seas en las respuestas, mejor será tu simulación.</p>
+                </div>
+                <div class="tip">
+                    <h4>📝 Paso a paso</h4>
+                    <p>15 preguntas rápidas. Puedes volver atrás en cualquier momento para corregir.</p>
+                </div>
+                <div class="tip">
+                    <h4>🎯 Resultado real</h4>
+                    <p>La simulación es una muestra. El proyecto profesional incluye diseño, desarrollo y soporte.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="resultSection" class="simulator-section">
+        <div class="container">
+            <div class="result-content">
+                <h2>✨ Tu simulación mejorada</h2>
+                <div id="resultText"></div>
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="downloadResult()">⬇ Descargar imagen</button>
+                    <button class="btn btn-primary" onclick="copyResult()">📋 Copiar texto</button>
+                    <button class="btn btn-primary" onclick="resetForm()">🔄 Otra simulación</button>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="#contacto" class="btn btn-secondary">💬 Contactar para proyecto real</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="faq-container">
+                <div class="faq-header">
+                    <h2>Preguntas frecuentes</h2>
+                    <p>¿Tienes dudas? Te ayudo</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿Qué es WebAI? <span>▼</span></h4>
+                    <p>WebAI es un simulador que usa inteligencia artificial para mostrarte cómo podría verse tu negocio mejorado. Respondes preguntas y obtienes una propuesta profesional en minutos.</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿Es gratis la simulación? <span>▼</span></h4>
+                    <p>Sí, la simulación es 100% gratuita. No necesitas registrarte ni dar datos de pago. Es una muestra de lo que podría ser tu proyecto real.</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿Cuánto cuesta un proyecto real? <span>▼</span></h4>
+                    <p>Los presupuestos son personalizados según la complejidad y alcance del proyecto. Nos adaptamos a diferentes niveles de inversión. Contactanos para una cotización específica según tu negocio.</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿Cuánto tarda un proyecto real? <span>▼</span></h4>
+                    <p>Un proyecto web básico puede estar listo en 1-2 semanas. Proyectos más complejos pueden tomar 3-4 semanas. Siempre te mantengo informado del progreso.</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿La simulación es el producto final? <span>▼</span></h4>
+                    <p>No. Es una vista previa generada por IA. El proyecto profesional incluye diseño personalizado, desarrollo, optimización y soporte continuo.</p>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <h4>¿Puedo cambiar el resultado después? <span>▼</span></h4>
+                    <p>Sí. Incluimos revisiones según el proyecto. Generalmente 2-3 rondas de cambios están incluidas en el presupuesto inicial.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contacto">
+        <div class="container">
+            <div class="contact-content">
+                <h2>¿Listo para tu proyecto profesional?</h2>
+                <p>La simulación es solo el comienzo. Si te gustó lo que viste, hablemos de convertirlo en realidad.</p>
+                
+                <div class="contact-links">
+                    <a href="mailto:alonsotrigosepulveda@gmail.com">✉️ alonsotrigosepulveda@gmail.com</a>
+                    <a href="https://wa.me/56961191457">📱 +56 9 6119 1457</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p><strong>WebAI</strong> — Simulador de Negocios con IA · alonsotrigosepulveda@gmail.com · +56 9 6119 1457</p>
+            <p style="margin-top: 12px;">© 2026 WebAI. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 15;
+
+        const formData = {
+            tipoNegocio: '',
+            nombreNegocio: '',
+            tiempoNegocio: '',
+            clientesTarget: '',
+            propuestaUnica: '',
+            serviciosPrincipales: '',
+            comunicacion: '',
+            presupuesto: '',
+            presenciaOnline: '',
+            mejorasPrincipales: '',
+            coloresPreferidos: '',
+            objetivo: '',
+            mejoriasReferencia: '',
+            comentariosAdicionales: ''
+        };
+
+        document.getElementById('nextBtn').addEventListener('click', nextStep);
+        document.getElementById('prevBtn').addEventListener('click', prevStep);
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const field = e.target.dataset.field;
+                const value = e.target.dataset.value;
+                document.querySelectorAll(`[data-field="${field}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+                e.target.classList.add('selected');
+                formData[field] = value;
+                e.preventDefault();
+            });
+        });
+
+        function toggleCustomSelect() {
+            const options = document.getElementById('selectOptions');
+            options.classList.toggle('active');
+        }
+
+        document.querySelectorAll('.custom-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.textContent;
+                
+                document.querySelectorAll('.custom-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                
+                document.getElementById('selectedValue').textContent = text;
+                formData.tipoNegocio = value;
+                document.getElementById('selectOptions').classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const customSelect = document.getElementById('customSelect');
+            if (!customSelect.contains(e.target)) {
+                document.getElementById('selectOptions').classList.remove('active');
+            }
+        });
+
+        function nextStep() {
+            if (currentStep === 2) formData.nombreNegocio = document.getElementById('nombreNegocio').value;
+            if (currentStep === 3) formData.tiempoNegocio = document.getElementById('tiempoNegocio').value;
+            if (currentStep === 4) formData.clientesTarget = document.getElementById('clientesTarget').value;
+            if (currentStep === 5) formData.propuestaUnica = document.getElementById('propuestaUnica').value;
+            if (currentStep === 6) formData.serviciosPrincipales = document.getElementById('serviciosPrincipales').value;
+            if (currentStep === 10) formData.mejorasPrincipales = document.getElementById('mejorasPrincipales').value;
+            if (currentStep === 11) formData.coloresPreferidos = document.getElementById('coloresPreferidos').value;
+            if (currentStep === 13) {
+                formData.urlReferencia = document.getElementById('urlReferencia')?.value || '';
+                formData.archivoReferencia = document.getElementById('archivoReferencia')?.files[0] || null;
+            }
+            if (currentStep === 14) formData.comentariosReferencia = document.getElementById('comentariosReferencia')?.value || '';
+
+            let fieldValid = true;
+            if (currentStep === 1 && !formData.tipoNegocio) fieldValid = false;
+            if (currentStep === 2 && !formData.nombreNegocio) fieldValid = false;
+            if (currentStep === 3 && !formData.tiempoNegocio) fieldValid = false;
+            if (currentStep === 4 && !formData.clientesTarget) fieldValid = false;
+            if (currentStep === 5 && !formData.propuestaUnica) fieldValid = false;
+            if (currentStep === 6 && !formData.serviciosPrincipales) fieldValid = false;
+            // Pasos 13 y 14 son opcionales, no tienen validación
+
+            if (!fieldValid) {
+                showToast('Por favor completa esta pregunta', 'error');
+                return;
+            }
+
+            if (currentStep === totalSteps) {
+                generateProposal();
+            } else {
+                currentStep++;
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.wizard-step').forEach((step, index) => {
+                step.classList.toggle('active', index + 1 === currentStep);
+            });
+
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('stepCount').textContent = currentStep;
+
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = currentStep === totalSteps ? '✨ Generar simulación' : 'Siguiente →';
+        }
+
+        async function generateProposal() {
+            const loader = document.getElementById('loader');
+            loader.classList.add('active');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ formData: formData })
+                });
+
+                loader.classList.remove('active');
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Error en la API');
+                }
+
+                const data = await response.json();
+                displayProposal(data.proposal);
+
+            } catch (error) {
+                loader.classList.remove('active');
+                console.error('Error:', error);
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function buildPrompt(data) {
+            return `Eres un experto en marketing digital y negocios. Basado en la siguiente información del negocio, genera una propuesta profesional dividida en DOS SECCIONES CLARAS:
+
+INFORMACIÓN DEL NEGOCIO:
+Tipo: ${data.tipoNegocio}
+Nombre: ${data.nombreNegocio}
+Tiempo operando: ${data.tiempoNegocio}
+Cliente objetivo: ${data.clientesTarget}
+Propuesta única: ${data.propuestaUnica}
+Servicios: ${data.serviciosPrincipales}
+Mejoras solicitadas: ${data.mejorasPrincipales}
+Colores preferidos: ${data.coloresPreferidos}
+${data.mejoriasReferencia ? `Inspiración: ${data.mejoriasReferencia}` : ''}
+${data.comentariosAdicionales ? `Notas: ${data.comentariosAdicionales}` : ''}
+
+ESTRUCTURA OBLIGATORIA DE LA PROPUESTA:
+
+## PARTE 1: PROPUESTA INMEDIATA (Quick Win)
+Enfócate en lo que el cliente pidió específicamente (mejorar su carta/menú/presencia). 
+- Acciones concretas y realizables en 2-3 semanas
+- Inversión realista y accesible
+- Resultados visibles rápidamente
+- Máximo 3 secciones: Diagnóstico breve, Acciones clave, Inversión
+
+## PARTE 2: VISIÓN EXTENDIDA (Opcional - Crecimiento)
+Muestra el potencial completo de lo que PODRÍAN hacer después. Esto genera curiosidad sin presionar.
+- Plan de 3-6 meses
+- Inversión mayor pero proporcional
+- Demuestra capacidades y visión de marca completa
+- Claramente marcado como "futuro" / "siguiente fase"
+
+FORMATO IMPORTANTE:
+- Usa **negrita** para conceptos clave
+- Mantén párrafos cortos (máximo 3-4 líneas)
+- Para dinero: usa CLP (pesos chilenos) y USD
+- Ejemplo: "$500,000 CLP / ~$620 USD"
+- Sé directo: cliente profesional, sin floreos innecesarios
+
+TONO:
+Profesional, respetuoso, sin exagerar. El cliente debe sentir que entienden sus necesidades inmediatas.`;
+        }
+
+        function formatProposal(text) {
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            let html = text
+                // Reemplazar fecha incorrecta
+                .replace(/Junio 2025|junio 2025/g, formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1))
+                // Títulos principales (# Título)
+                .replace(/^# (.+)$/gm, '<h1 style="font-size: 28px; color: #667eea; margin: 40px 0 20px; border-bottom: 3px solid #667eea; padding-bottom: 15px; font-weight: bold;">$1</h1>')
+                // Subtítulos (## Subtítulo)
+                .replace(/^## (.+)$/gm, '<h2 style="font-size: 22px; color: #667eea; margin: 35px 0 20px; font-weight: bold;">$1</h2>')
+                // Subtítulos menores (### Subtítulo)
+                .replace(/^### (.+)$/gm, '<h3 style="font-size: 18px; color: #764ba2; margin: 20px 0 15px; font-weight: bold;">$1</h3>')
+                // Negrita
+                .replace(/\*\*(.+?)\*\*/g, '<strong style="color: #667eea; font-weight: 600;">$1</strong>')
+                // Cursiva
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                // Saltos de línea
+                .replace(/\n/g, '<br>')
+                // Citas en blockquote
+                .replace(/<br>> (.+?)<br>/g, '<blockquote style="border-left: 4px solid #667eea; padding: 20px 20px; margin: 20px 0; background: #f8f9ff; font-style: italic; color: #555; border-radius: 4px;">$1</blockquote>')
+                // Listas
+                .replace(/<br>- (.+?)<br>/g, '<li style="margin: 10px 0; margin-left: 20px;">$1</li>')
+                // Líneas divisoras
+                .replace(/<br>---<br>/g, '<hr style="border: none; border-top: 2px solid #e0e0e0; margin: 30px 0;">')
+                // Tabla de información (formato: | key | value |)
+                .replace(/\| (.+?) \| (.+?) \|/g, '<div style="display: grid; grid-template-columns: 200px 1fr; gap: 20px; padding: 15px; background: #f8f9ff; margin: 10px 0; border-left: 4px solid #667eea; border-radius: 4px;"><strong style="color: #667eea;">$1:</strong><span>$2</span></div>');
+                
+            return `<div style="
+                max-width: 900px;
+                margin: 0 auto;
+                line-height: 1.8;
+                font-size: 15px;
+                color: #333;
+            ">${html}</div>`;
+        }
+
+        function displayProposal(proposal) {
+            const loader = document.getElementById('loader');
+            loader.classList.remove('active');
+            
+            // Reemplazar moneda automáticamente
+            let updatedProposal = proposal
+                .replace(/MXN/g, 'CLP')
+                .replace(/\$(\d+(?:,\d{3})*(?:\.\d{2})?)\s*(?:-\s*\$(\d+(?:,\d{3})*(?:\.\d{2})?))?/g, (match, p1, p2) => {
+                    // Convertir aproximada: 1 MXN ≈ 30 CLP, 1 USD ≈ 850 CLP
+                    const num1 = parseFloat(p1.replace(/,/g, ''));
+                    const clp1 = Math.round(num1 * 30);
+                    const usd1 = Math.round(num1 / 1.2);
+                    
+                    if (p2) {
+                        const num2 = parseFloat(p2.replace(/,/g, ''));
+                        const clp2 = Math.round(num2 * 30);
+                        const usd2 = Math.round(num2 / 1.2);
+                        return `$${clp1.toLocaleString('es-CL')} - $${clp2.toLocaleString('es-CL')} CLP (~$${usd1.toLocaleString('en-US')} - $${usd2.toLocaleString('en-US')} USD)`;
+                    }
+                    return `$${clp1.toLocaleString('es-CL')} CLP (~$${usd1.toLocaleString('en-US')} USD)`;
+                });
+            
+            document.getElementById('resultText').innerHTML = formatProposal(updatedProposal);
+            document.getElementById('resultSection').classList.add('active');
+            document.getElementById('wizardForm').style.display = 'none';
+            document.getElementById('simulador').style.display = 'none';
+            
+            showToast('¡Propuesta generada exitosamente!', 'success');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function downloadResult() {
+            const htmlContent = document.getElementById('resultText').innerHTML;
+            const htmlPage = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta WebAI</title>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin: 0 0 10px;
+        }
+        .header p {
+            color: #999;
+            margin: 0;
+        }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        h2 { color: #667eea; margin-top: 30px; }
+        h3 { color: #764ba2; }
+        strong { color: #667eea; }
+        li { margin: 10px 0; }
+        blockquote { border-left: 4px solid #667eea; padding-left: 15px; background: #f8f9ff; padding: 15px; }
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Tu simulación mejorada</h1>
+            <p>Propuesta personalizada generada por WebAI</p>
+        </div>
+        ${htmlContent}
+    </div>
+</body>
+</html>
+            `;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlPage));
+            element.setAttribute('download', `propuesta-webai-${new Date().getTime()}.html`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showToast('Descargado como HTML profesional', 'success');
+        }
+
+        function copyResult() {
+            const text = document.getElementById('resultText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copiado al portapapeles', 'success');
+            });
+        }
+
+        function resetForm() {
+            currentStep = 1;
+            Object.keys(formData).forEach(key => { formData[key] = ''; });
+            document.getElementById('wizardForm').reset();
+            document.querySelectorAll('.option-btn.selected').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('resultSection').classList.remove('active');
+            document.getElementById('wizardForm').style.display = 'block';
+            document.getElementById('simulador').style.display = 'block';
+            updateUI();
+            window.scrollTo({ top: document.getElementById('simulador').offsetTop, behavior: 'smooth' });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function toggleFAQ(element) {
+            element.classList.toggle('open');
+        }
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('navMenu');
+            const hamburger = document.querySelector('.hamburger');
+            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
